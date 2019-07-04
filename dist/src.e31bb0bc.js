@@ -35515,8 +35515,8 @@ THREE.GCodeLoader.prototype.setPath = function (value) {
 
 THREE.GCodeLoader.prototype.parse = function (data, params) {
   var state = {
-    x: 0,
-    y: 0,
+    x: 138,
+    y: 130,
     z: 0,
     e: 0,
     f: 0,
@@ -35627,10 +35627,8 @@ THREE.GCodeLoader.prototype.parse = function (data, params) {
 
   function addObject(vertex, extruding, layer) {
     var geometry = new THREE.BufferGeometry();
-    geometry.center();
     geometry.addAttribute('position', new THREE.Float32BufferAttribute(vertex, 3)); // if (extruding) {
-
-    console.log(params.maxLayer, layer);
+    // console.log(params.maxLayer, layer);
 
     if (params && params.maxLayer === layer + 1) {
       var segments = new THREE.LineSegments(geometry, currentMaterial);
@@ -37086,7 +37084,7 @@ function create_fragment(ctx) {
   };
 }
 
-let maxLayer = 89;
+let maxLayer = 1000;
 let drawPath = true;
 
 function instance($$self, $$props, $$invalidate) {
@@ -37117,17 +37115,16 @@ function instance($$self, $$props, $$invalidate) {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0xffffff);
   scene;
-  gcodeLoader.load('assets/models/test2.gcode', object => {
+  gcodeLoader.load("assets/models/test2_3.gcode", object => {
     a = object;
-    object.position.set(-156, 0, 87);
+    object.position.set(0, 0, 0);
     scene.add(object);
   }, null, null, {
     minLayer,
     maxLayer,
     drawPath
   });
-  stlLoader.load('assets/models/test2.stl', geometry => {
-    geometry.center();
+  stlLoader.load("assets/models/test2.stl", geometry => {
     var material = new THREE.MeshPhongMaterial({
       color: 0x2a6dba,
       specular: 0x000000,
@@ -37135,18 +37132,18 @@ function instance($$self, $$props, $$invalidate) {
       transparent: true,
       opacity: 0.7
     });
+    geometry.computeBoundingBox();
     var mesh = new THREE.Mesh(geometry, material);
-    mesh.position.set(0, 20, 0);
-    mesh.rotation.set(-1.565, 0, 0);
+    mesh.position.set(0, -geometry.boundingBox.min.y, 0);
+    mesh.rotation.set(0, 0, 0);
     mesh.castShadow = true;
-    mesh.receiveShadow = true; // scene.add(new THREE.BoxHelper(mesh));
-
+    mesh.receiveShadow = true;
     scene.add(mesh);
   });
   const renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio(window.devicePixelRatio);
   renderer.setSize(window.innerWidth, window.innerHeight);
-  document.getElementById('canvas').appendChild(renderer.domElement);
+  document.getElementById("canvas").appendChild(renderer.domElement);
   scene.add(_floor.default);
   scene.add(new THREE.HemisphereLight(0x443333, 0x111122));
   addShadowedLight(1, 1, 1, 0xffffff, 1.35);
@@ -37236,7 +37233,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49463" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "34605" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

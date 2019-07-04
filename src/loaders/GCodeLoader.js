@@ -13,7 +13,6 @@ import * as THREE from 'three';
  * @author joewalnes
  */
 THREE.GCodeLoader = function ( manager ) {
-
 	this.manager = ( manager !== undefined ) ? manager : THREE.DefaultLoadingManager;
 
 	this.splitLayer = false;
@@ -42,7 +41,7 @@ THREE.GCodeLoader.prototype.setPath = function ( value ) {
 
 THREE.GCodeLoader.prototype.parse = function ( data, params ) {
 
-	var state = { x: 0, y: 0, z: 0, e: 0, f: 0, extruding: false, relative: false };
+	var state = { x: 138, y: 130, z: 0, e: 0, f: 0, extruding: false, relative: false };
 	var layers = [];
 
 	var currentLayer = undefined;
@@ -182,11 +181,10 @@ THREE.GCodeLoader.prototype.parse = function ( data, params ) {
 	function addObject( vertex, extruding, layer ) {
 
 		var geometry = new THREE.BufferGeometry();
-		geometry.center();
 		geometry.addAttribute( 'position', new THREE.Float32BufferAttribute( vertex, 3 ) );
 
 		// if (extruding) {
-			console.log(params.maxLayer, layer);
+			// console.log(params.maxLayer, layer);
 
 			if (params && params.maxLayer === layer + 1) {
 				var segments = new THREE.LineSegments(geometry, currentMaterial);
