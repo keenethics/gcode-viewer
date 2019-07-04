@@ -10,12 +10,11 @@ body {
 }
 
 #canvas {
-  position: absolute;
-  left: 0;
   height: 0;
-  width: 100%;
+  width: 70%;
   height: 100%;
   z-index: 1;
+  float: left;
 }
 
 #canvas canvas {
@@ -24,11 +23,17 @@ body {
 }
 
 #ui {
-  position: absolute;
-  left: 0;
   height: 0;
-  width: 100%;
+  width: 30%;
   height: 100%;
   z-index: 10;
+  float: right;
 }
 
+.layersRange {
+  width: 95%
+}
+
+.layersRangeCaption {
+  padding: 1rem 0;
+}

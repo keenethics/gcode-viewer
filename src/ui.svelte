@@ -6,7 +6,6 @@
   import OrbitControls from "./controls/OrbitControls";
 
   import meshCanvas from "./floor";
-
   function addShadowedLight(x, y, z, color, intensity) {
     var directionalLight = new THREE.DirectionalLight(color, intensity);
     directionalLight.position.set(x, y, z);
@@ -25,10 +24,21 @@
   }
 
   let a = null;
+  let drawPath = true;
 
   let minLayer = 0;
-  let maxLayer = 1000;
-  let drawPath = true;
+  let maxLayer;
+  let currentLayersNumber;
+  let gcodeObject;
+  let initialFigureLayersList;
+
+  const handleChange = ev => {
+    currentLayersNumber = ev.target.value;
+    gcodeObject.children = initialFigureLayersList.slice(
+      0,
+      currentLayersNumber
+    );
+  };
 
   const gcodeLoader = new THREE.GCodeLoader();
   const stlLoader = new THREE.STLLoader();
@@ -39,19 +49,20 @@
     0.1,
     10000
   );
+
   camera.position.set(0, 40, 100);
   const controls = new THREE.OrbitControls(camera);
 
   const scene = new THREE.Scene();
   scene.background = new THREE.Color(0xffffff);
-
   gcodeLoader.load(
     "assets/models/test2_3.gcode",
     object => {
-      a = object;
       object.position.set(0, 0, 0);
-
-      scene.add(object);
+      gcodeObject = object;
+      initialFigureLayersList = gcodeObject.children;
+      currentLayersNumber = maxLayer = initialFigureLayersList.length;
+      scene.add(gcodeObject);
     },
     null,
     null,
@@ -63,7 +74,6 @@
   );
 
   stlLoader.load("assets/models/test2.stl", geometry => {
-
     var material = new THREE.MeshPhongMaterial({
       color: 0x2a6dba,
       specular: 0x000000,
@@ -71,7 +81,7 @@
       transparent: true,
       opacity: 0.7
     });
-    geometry.computeBoundingBox()
+    geometry.computeBoundingBox();
 
     var mesh = new THREE.Mesh(geometry, material);
     mesh.position.set(0, -geometry.boundingBox.min.y, 0);
@@ -83,9 +93,8 @@
 
   const renderer = new THREE.WebGLRenderer();
   renderer.setPixelRatio(window.devicePixelRatio);
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(900.6, window.innerHeight);
   document.getElementById("canvas").appendChild(renderer.domElement);
-
   scene.add(meshCanvas);
   scene.add(new THREE.HemisphereLight(0x443333, 0x111122));
   addShadowedLight(1, 1, 1, 0xffffff, 1.35);
@@ -108,3 +117,19 @@
   };
 </script>
 
+{#if maxLayer}
+  <div className="layersRangeContainer">
+    <div class="layersRangeCaption">
+      Number of layers to show:
+      <span>0 - {maxLayer}</span>
+    </div>
+    <input
+      class="layersRange"
+      type="range"
+      min={minLayer}
+      max={maxLayer}
+      bind:value={currentLayersNumber}
+      on:input={handleChange}
+      on:mousedown={ev => ev.stopPropagation()} />
+  </div>
+{/if}
